@@ -1,8 +1,3 @@
-import pWorld from 'prismarine-world'
-
-const World = pWorld('1.12.1')
-const palier1 = new World(null, './palier1/region')
-
 export default class Client {
 	loadedChunks = new Map()
 	viewDistance = 5

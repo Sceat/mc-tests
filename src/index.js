@@ -1,11 +1,8 @@
 import mc from 'minecraft-protocol'
 import World from './world'
 import Client from './client'
-import ChunkNat from 'prismarine-chunk'
-import Vec3 from 'vec3'
 
 const palier1 = new World('./palier1/level.dat', './palier1/region')
-const Chunk = ChunkNat('1.12.1')
 
 void (async function() {
 	await palier1.load()
