@@ -8,7 +8,7 @@ export default class Client {
 		this.ipAdress = socketClient.socket.remoteAdress
 		socketClient.on('end', ::this.onEnd)
 		socketClient.on('error', ::this.onError)
-		socketClient.on('packet', ::this.onPacket)
+		// socketClient.on('packet', ::this.onPacket)
 		socketClient.on('chat', ::this.onChat)
 		socketClient.on('position', ::this.onMove) // throtle diz mothafucker ? we'll see
 	}
@@ -49,7 +49,8 @@ export default class Client {
 
 	async loadChunks() {
 		this.unloadChunks()
-		const chunks = await Promise.all(this.world.nearbyChunks(this))
+		const { x: cX, z: cZ } = this.chunkPos
+		const chunks = await Promise.all(this.world.nearbyChunks(cX, cZ, this.viewDistance))
 		console.log(`+ ${chunks.filter(({ x, z }) => !this.loadedChunks.has(`${x}%${z}`)).length} chunks`)
 		for (let { x, z, chunk } of chunks) {
 			if (!this.loadedChunks.has(`${x}%${z}`)) this.loadChunk(x, z, chunk)
@@ -90,15 +91,15 @@ export default class Client {
 		}
 	}
 
-	async onEnd() {
+	onEnd() {
 		console.log(`Connection closed [${this.ipAdress}]`)
 	}
 
-	async onError(err) {
+	onError(err) {
 		console.error(`Client error [${err}]`)
 	}
 
-	async onChat(pkt) {
+	onChat(pkt) {
 		const { message } = pkt
 		const msg = {
 			translate: 'chat.type.text',
@@ -107,7 +108,7 @@ export default class Client {
 		this.socketClient.write('chat', { message: JSON.stringify(msg), position: 0 })
 	}
 
-	async onPacket(data, meta) {
+	onPacket(data, meta) {
 		let drop = ['position', 'look', 'keep_alive', 'position_look', 'entity_action', 'arm_animation']
 		if (drop.includes(meta.name)) return
 		console.log('=================')

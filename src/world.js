@@ -13,7 +13,7 @@ export default class World {
 	}
 
 	async cachedChunk(x, z) {
-		await Promise.resolve() // wtf ? that kind of code u don't know why it's there but it doesn't work without it ¯\_(ツ)_/¯
+		await Promise.resolve() // ¯\_(ツ)_/¯
 		let chunk = this.chunks[x] && this.chunks[x][z]
 		if (!chunk) {
 			chunk = await this.loader.readChunk(x, z)
@@ -23,13 +23,18 @@ export default class World {
 		return { x, z, chunk }
 	}
 
-	nearbyChunks(client) {
-		const { x: cX, z: cZ } = client.chunkPos
+	/**
+	 *
+	 * @param {Number} chunkX
+	 * @param {Number} chunkZ
+	 * @param {Number} distance view distance
+	 * @returns {Promise[]} An array of promises which resolve as a chunk
+	 */
+	nearbyChunks(chunkX, chunkZ, distance) {
 		const chunks = []
-		const view = client.viewDistance
-		const range = view * 2
-		const posX = cX - view
-		const posZ = cZ - view
+		const range = distance * 2
+		const posX = chunkX - distance
+		const posZ = chunkZ - distance
 		spiral([range, range], (x, z) => {
 			chunks.push(this.cachedChunk(x + posX, z + posZ))
 		})
