@@ -1,0 +1,25 @@
+{
+  "name": "aresd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node src/index.js --trace-warnings"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/node": "^7.0.0-beta.51",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-function-bind": "^7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/preset-env": "^7.0.0-beta.51"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "minecraft-protocol": "^1.8.0",
+    "prismarine-chunk": "^1.9.0",
+    "prismarine-world": "^2.1.0",
+    "vec3": "^0.1.3"
+  }
+}
