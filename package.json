@@ -20,6 +20,7 @@
     "minecraft-protocol": "^1.8.0",
     "prismarine-chunk": "^1.9.0",
     "prismarine-world": "^2.1.0",
+    "spiralloop": "^1.0.2",
     "vec3": "^0.1.3"
   }
 }

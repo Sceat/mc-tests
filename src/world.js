@@ -1,4 +1,5 @@
 import mapLoader from './nativeMapLoader'
+import spiral from 'spiralloop'
 
 export default class World {
 	chunks = []
@@ -12,26 +13,26 @@ export default class World {
 	}
 
 	async cachedChunk(x, z) {
+		await Promise.resolve() // wtf ? that kind of code u don't know why it's there but it doesn't work without it ¯\_(ツ)_/¯
 		let chunk = this.chunks[x] && this.chunks[x][z]
 		if (!chunk) {
 			chunk = await this.loader.readChunk(x, z)
 			if (!this.chunks[x]) this.chunks[x] = []
 			this.chunks[x][z] = chunk
 		}
-		return chunk
+		return { x, z, chunk }
 	}
 
-	async sendChunks(client) {
-		const { x, z } = client
-		const chunkX = Math.floor(x / 16)
-		const chunkZ = Math.floor(z / 16)
-		const chunkk = await this.cachedChunk(chunkX, chunkZ)
-		client.sendChunk(chunkX, chunkZ, chunkk.dump())
-		// for (let posX = chunkX - 2; posX < chunkX + 2; posX++) {
-		// 	for (let posZ = chunkZ - 2; posZ < chunkZ + 2; posZ++) {
-		// 		const chunk = await this.cachedChunk(posX, posZ)
-		// 		client.sendChunk(posX, posZ, chunk.dump())
-		// 	}
-		// }
+	nearbyChunks(client) {
+		const { x: cX, z: cZ } = client.chunkPos
+		const chunks = []
+		const view = client.viewDistance
+		const range = view * 2
+		const posX = cX - view
+		const posZ = cZ - view
+		spiral([range, range], (x, z) => {
+			chunks.push(this.cachedChunk(x + posX, z + posZ))
+		})
+		return chunks
 	}
 }

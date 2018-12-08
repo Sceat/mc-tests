@@ -1,11 +1,11 @@
+import pWorld from 'prismarine-world'
+
+const World = pWorld('1.12.1')
+const palier1 = new World(null, './palier1/region')
+
 export default class Client {
-	x
-	y
-	z
-	yaw
-	pitch
-	onGround
-	lastChunkPos
+	loadedChunks = new Map()
+	viewDistance = 5
 
 	constructor(socketClient, world) {
 		this.world = world
@@ -28,31 +28,47 @@ export default class Client {
 			maxPlayers: 1,
 			reducedDebugInfo: false,
 		})
+		this.godMod()
+	}
+
+	godMod() {
+		this.socketClient.write('abilities', { flags: 15, flyingSpeed: 0.1, walkingSpeed: 0.1 })
 	}
 
 	async teleport(x, y, z, yaw = 137, pitch = 0, flags = 0x00) {
-		this.socketClient.write('position', {
-			x,
-			y,
-			z,
-			yaw,
-			pitch,
-			flags,
-		})
-		Object.assign(this, { x, y, z, yaw, pitch })
-		await this.world.sendChunks(this)
+		const payload = { x, y, z, yaw, pitch, flags }
+		this.socketClient.write('position', payload)
+		Object.assign(this, payload)
+		await this.loadChunks()
 	}
 
-	sendChunk(x, z, chunkData, groundUp = true, bitMap = 0xffff, blockEntities = []) {
-		console.log(`sending chunk [${x},${z}] `)
-		this.socketClient.write('map_chunk', {
-			x,
-			z,
-			groundUp,
-			bitMap,
-			chunkData,
-			blockEntities,
-		})
+	loadChunk(x, z, chunk, groundUp = true, bitMap = 0xffff, blockEntities = []) {
+		this.socketClient.write('map_chunk', { x, z, groundUp, bitMap, chunkData: chunk.dump(), blockEntities })
+		this.loadedChunks.set(`${x}%${z}`, { x, z })
+	}
+
+	unloadChunk(x, z) {
+		this.socketClient.write('unload_chunk', { x, z })
+		this.loadedChunks.delete(`${x}%${z}`)
+	}
+
+	async loadChunks() {
+		this.unloadChunks()
+		const chunks = await Promise.all(this.world.nearbyChunks(this))
+		console.log(`+ ${chunks.filter(({ x, z }) => !this.loadedChunks.has(`${x}%${z}`)).length} chunks`)
+		for (let { x, z, chunk } of chunks) {
+			if (!this.loadedChunks.has(`${x}%${z}`)) this.loadChunk(x, z, chunk)
+		}
+	}
+
+	unloadChunks() {
+		const { x: cX, z: cZ } = this.chunkPos
+		const chunks = []
+		for (let { x, z } of this.loadedChunks.values()) {
+			if (Math.abs(x - cX) > this.viewDistance || Math.abs(z - cZ) > this.viewDistance) chunks.push({ x, z })
+		}
+		console.log(`- ${chunks.length} chunks`)
+		chunks.forEach(({ x, z }) => this.unloadChunk(x, z))
 	}
 
 	sendMsg(msg, position) {
@@ -74,20 +90,20 @@ export default class Client {
 		const lastX = this.lastChunkPos?.x
 		const lastZ = this.lastChunkPos?.z
 		if (x !== lastX || z !== lastZ) {
-			await this.world.sendChunks(this)
 			this.lastChunkPos = this.chunkPos
+			await this.loadChunks()
 		}
 	}
 
-	onEnd() {
+	async onEnd() {
 		console.log(`Connection closed [${this.ipAdress}]`)
 	}
 
-	onError(err) {
+	async onError(err) {
 		console.error(`Client error [${err}]`)
 	}
 
-	onChat(pkt) {
+	async onChat(pkt) {
 		const { message } = pkt
 		const msg = {
 			translate: 'chat.type.text',
@@ -96,8 +112,8 @@ export default class Client {
 		this.socketClient.write('chat', { message: JSON.stringify(msg), position: 0 })
 	}
 
-	onPacket(data, meta) {
-		let drop = ['position', 'look', 'keep_alive', 'position_look', 'entity_action']
+	async onPacket(data, meta) {
+		let drop = ['position', 'look', 'keep_alive', 'position_look', 'entity_action', 'arm_animation']
 		if (drop.includes(meta.name)) return
 		console.log('=================')
 		console.log(`Packet: ${meta.name}`)
