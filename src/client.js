@@ -30,11 +30,11 @@ export default class Client {
 		this.socketClient.write('abilities', { flags: 15, flyingSpeed: 0.1, walkingSpeed: 0.1 })
 	}
 
-	async teleport(x, y, z, yaw = 137, pitch = 0, flags = 0x00) {
+	teleport(x, y, z, yaw = 137, pitch = 0, flags = 0x00) {
 		const payload = { x, y, z, yaw, pitch, flags }
 		this.socketClient.write('position', payload)
 		Object.assign(this, payload)
-		await this.loadChunks()
+		this.loadChunks()
 	}
 
 	loadChunk(x, z, chunk, groundUp = true, bitMap = 0xffff, blockEntities = []) {
@@ -80,14 +80,14 @@ export default class Client {
 		return { x, z }
 	}
 
-	async onMove(pkt) {
+	onMove(pkt) {
 		Object.assign(this, pkt)
 		const { x, z } = this.chunkPos
 		const lastX = this.lastChunkPos?.x
 		const lastZ = this.lastChunkPos?.z
 		if (x !== lastX || z !== lastZ) {
 			this.lastChunkPos = this.chunkPos
-			await this.loadChunks()
+			this.loadChunks()
 		}
 	}
 
