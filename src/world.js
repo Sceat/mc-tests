@@ -35,7 +35,6 @@ export default class World {
 		const range = distance * 2
 		const posX = chunkX - distance
 		const posZ = chunkZ - distance
-		console.log('nearby', range, posX, posZ)
 		spiral([range, range], (x, z) => {
 			chunks.push(this.cachedChunk(x + posX, z + posZ))
 		})
