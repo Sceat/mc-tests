@@ -1,6 +1,6 @@
 export default class Client {
 	loadedChunks = new Map()
-	viewDistance = 5
+	viewDistance = 10
 
 	constructor(socketClient, world) {
 		this.world = world
@@ -42,9 +42,9 @@ export default class Client {
 		this.loadedChunks.set(`${x}%${z}`, { x, z })
 	}
 
-	unloadChunk(x, z) {
-		this.socketClient.write('unload_chunk', { x, z })
-		this.loadedChunks.delete(`${x}%${z}`)
+	unloadChunk(chunkX, chunkZ) {
+		this.socketClient.write('unload_chunk', { chunkX, chunkZ })
+		this.loadedChunks.delete(`${chunkX}%${chunkZ}`)
 	}
 
 	async loadChunks() {
