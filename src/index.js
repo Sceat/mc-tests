@@ -1,6 +1,7 @@
 import mc from 'minecraft-protocol'
 import World from './world'
 import Client from './client'
+import {VERSION} from './constant'
 
 const palier1 = new World('./palier1/level.dat', './palier1/region')
 let server = mc.createServer({
@@ -9,7 +10,7 @@ let server = mc.createServer({
 	encryption: true,
 	host: '0.0.0.0',
 	port: 25565,
-	version: '1.12.1',
+	version: VERSION,
 	maxPlayers: 1,
 })
 

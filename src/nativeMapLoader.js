@@ -1,6 +1,7 @@
 import { level, Anvil } from 'prismarine-provider-anvil'
+import { VERSION } from './constant'
 
-const anvil = Anvil('1.12.1')
+const anvil = Anvil(VERSION)
 const err = new Error("Map loader haven't been loaded")
 
 export default class {
