@@ -7,7 +7,7 @@ export default class Listener {
 		this.client.on('error', ::this.onError)
 		this.client.on('packet', ::this.onPacket)
 		this.client.on('chat', ::this.onChat)
-		this.client.on('position', ::this.onMove) // throtle diz mothafucker ? we'll see
+		this.client.on('position', ::this.onMove)
 		this.client.on('look', ::this.onLook)
 	}
 
