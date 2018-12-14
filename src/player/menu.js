@@ -1,8 +1,9 @@
-const screen = []
-
-for(let x = 0;x<4;x++) {
-    for(let y=0;y<3;y++) {
-        if(!screen[x]) screen[x]=[]
-        screen[x][y] = 1
-    }
+export default function showBlocks(player) {
+	const blocks = []
+	for (let z = 0; z < 5; z++) {
+		for (let y = 0; y < 4; y++) {
+			blocks.push({ x: 16, y: y + 70, z, id: 1, data: 0 })
+		}
+	}
+	player.multiBlockChange(blocks)
 }

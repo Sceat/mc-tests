@@ -6,10 +6,10 @@ const testItem = new Item(358, 1, 0)
 export default class Actions {
 	abilities(invulnerable = false, flying = false, allowFlying = false, creative = false) {
 		let flags = 0
-		if (invulnerable) flags |= 1
-		if (flying) flags |= 2
-		if (allowFlying) flags |= 4
-		if (creative) flags |= 8
+		if (invulnerable) flags += 1
+		if (flying) flags += 2
+		if (allowFlying) flags += 4
+		if (creative) flags += 8
 		this.client.write('abilities', { flags, flyingSpeed: 0.1, walkingSpeed: 0.1 })
 	}
 

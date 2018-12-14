@@ -3,15 +3,17 @@ import World from '@aresrpg/aresrpg-world'
 import Player from '@player/player'
 import { VERSION, ChunkReader } from '@/constant'
 import VoidLoader from './emptyChunkGen'
+import menu from '@player/menu'
 
 const loader = new ChunkReader('./palier1')
 const palier1 = new World(::loader.load)
 
 // const voidLoader = new VoidLoader((x, z) => !(x | z))
+// const voidLoader = new VoidLoader((x, z) => x === 1 && z === 0)
 const voidLoader = new VoidLoader(() => true)
 const voidWorld = new World(::voidLoader.load)
 
-let server = mc.createServer({
+const server = mc.createServer({
 	'online-mode': false,
 	motd: 'Aresrpg Vanilla',
 	encryption: true,
@@ -27,22 +29,17 @@ void (async function() {
 	server.on('login', async function(client) {
 		console.log('Incoming connection', '(' + client.socket.remoteAddress + ')')
 		const player = new Player(client)
-		player.login(0)
+		player.login(1)
 		player.abilities(true, true, true, true)
 		// player.world = palier1
 		player.world = voidWorld
 		// player.teleport(469, 170, 646)
-		player.teleport(0, 70, 0)
+		player.teleport(14, 70.3, 2.5, -90)
 		player.setItem()
 		setTimeout(() => {
-			const blocks = []
-			for (let x = 0; x < 5; x++) {
-				for (let y = 0; y < 4; y++) {
-					blocks.push({ x, y: y + 70, z: 0, id: 2, data: 0 })
-				}
-			}
-			player.multiBlockChange(blocks)
-		}, 100)
+			player.blockChange(16, 70, 0, 1, 0)
+			// menu(player)
+		}, 1000)
 	})
 
 	server.on('error', function(error) {

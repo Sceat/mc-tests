@@ -3,7 +3,7 @@ import prismarineItem from 'prismarine-item'
 import prismarineChunk from 'prismarine-chunk'
 import prismarineBlock from 'prismarine-block'
 
-export const VERSION = '1.12.1'
+export const VERSION = '1.13.2'
 
 export const ChunkReader = Anvil(VERSION)
 export const Item = prismarineItem(VERSION)
