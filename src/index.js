@@ -5,8 +5,8 @@ import { VERSION, ChunkReader } from '@/constant'
 import VoidLoader from './emptyChunkGen'
 import menu from '@player/menu'
 
-const loader = new ChunkReader('./palier1')
-const palier1 = new World(::loader.load)
+// const loader = new ChunkReader('./palier1')
+// const palier1 = new World(::loader.load)
 
 // const voidLoader = new VoidLoader((x, z) => !(x | z))
 // const voidLoader = new VoidLoader((x, z) => x === 1 && z === 0)
