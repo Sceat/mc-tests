@@ -1,5 +1,5 @@
 import { Chunk, Block } from '@/constant'
-import Vec3 from 'vec3'
+import { Vec3 } from 'vec3'
 
 export default class {
 	constructor(chunkPredicate) {
@@ -11,6 +11,7 @@ export default class {
 		const chunk = new Chunk()
 		chunk.initialize((x, y, z) => {
 			chunk.setSkyLight(new Vec3(x, y, z), 15)
+			// chunk.setBiome(new Vec3(x, 0, z), 1)
 			return new Block(0)
 		})
 		return chunk

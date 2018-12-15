@@ -1,7 +1,7 @@
 import { Item } from '@/constant'
 import MapColor from '@aresrpg/aresrpg-map-colors'
 
-const testItem = new Item(358, 1, 0)
+const testItem = new Item(1)
 
 export default class Actions {
 	abilities(invulnerable = false, flying = false, allowFlying = false, creative = false) {

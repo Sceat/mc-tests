@@ -29,15 +29,15 @@ void (async function() {
 	server.on('login', async function(client) {
 		console.log('Incoming connection', '(' + client.socket.remoteAddress + ')')
 		const player = new Player(client)
-		player.login(1)
+		player.login(0)
 		player.abilities(true, true, true, true)
 		// player.world = palier1
 		player.world = voidWorld
 		// player.teleport(469, 170, 646)
 		player.teleport(14, 70.3, 2.5, -90)
-		player.setItem()
+		// player.setItem()
 		setTimeout(() => {
-			player.blockChange(16, 70, 0, 1, 0)
+			player.blockChange(16, 70, 0, 10)
 			// menu(player)
 		}, 1000)
 	})

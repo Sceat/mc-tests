@@ -6,7 +6,7 @@ export default class Player {
 	world = undefined
 	viewDistance = 5
 
-	logPkt = true
+	logPkt = false
 
 	x
 	y
